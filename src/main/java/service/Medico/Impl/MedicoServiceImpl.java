@@ -3,10 +3,7 @@ package service.Medico.Impl;
 import domain.Medico;
 import service.Medico.MedicoService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class MedicoServiceImpl implements MedicoService {
     private List<Medico> medicos = new ArrayList<>();
@@ -27,30 +24,62 @@ public class MedicoServiceImpl implements MedicoService {
         String especialidad = sc.nextLine();
         nuevoMedico.setEspecialidad(especialidad);
 
-        //CargadorCalendario.cargarCalendario(nuevoMedico);
+        //cargarCalendario(nuevoMedico);
 
         medicos.add(nuevoMedico);
         System.out.println("✅ Médico creado exitosamente.");
+        sc.close();
     }
 
     @Override
-    public void actualizarMedico() {
-
+    public void actualizarMedico(String nombre) {
+        Medico medico = buscarMedicoPorNombre(nombre);
+        if (medico != null) {
+            //crearMedico();
+        }
     }
 
     @Override
-    public void eliminarMedico() {
-
+    public void eliminarMedico(String nombre) {
+        Medico medico = buscarMedicoPorNombre(nombre);
+        if (medico != null) {
+            medicos.remove(medico);
+        }
     }
 
     @Override
     public Medico buscarMedicoPorNombre(String nombre) {
-        return null;
+        try {
+            for (Medico medico : medicos) {
+                if (medico.getNombre().equalsIgnoreCase(nombre)) {
+                    return medico;
+                }
+            }
+            throw new NoSuchElementException("No se encontró un médico con el nombre: " + nombre);
+        } catch (Exception e) {
+            System.err.println("Error al buscar médico: " + e.getMessage());
+            return null;
+        }
     }
 
+
     @Override
-    public Medico buscarMedicoPorEspecialidad(String especialidad) {
-        return null;
+    public List<Medico> listarMedicosPorEspecialidad(String especialidad) {
+        try {
+            List<Medico> resultado = new ArrayList<>();
+            for (Medico medico : medicos) {
+                if (medico.getEspecialidad().equalsIgnoreCase(especialidad)) {
+                    resultado.add(medico);
+                }
+            }
+            if (resultado.isEmpty()) {
+                throw new NoSuchElementException("No se encontró una especialidad: " + especialidad);
+            }
+            return resultado;
+        } catch (Exception e) {
+            System.err.println("Error al buscar médicos por especialidad: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
