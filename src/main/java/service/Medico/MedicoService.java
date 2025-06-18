@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface MedicoService {
     void crearMedico();
-    void actualizarMedico();
-    void eliminarMedico();
+    void actualizarMedico(String nombre);
+    void eliminarMedico(String nombre);
     Medico buscarMedicoPorNombre(String nombre);
-    Medico buscarMedicoPorEspecialidad(String especialidad);
+    List<Medico> listarMedicosPorEspecialidad(String especialidad);
     List<Medico> listarMedicos();
 }
