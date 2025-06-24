@@ -1,20 +1,35 @@
 package domain;
 
 import domain.enums.Estado;
+import java.time.LocalDate;
 
 import java.time.LocalTime;
 
 public class Turno {
+    private LocalDate fecha;
     private Estado estado;
     private Paciente paciente;
     private Medico medico;
     private LocalTime horario;
 
-    public Turno(Estado estado, Paciente paciente, Medico medico, LocalTime horario) {
+    public Turno() {
+    }
+
+    
+    public Turno(LocalDate fecha,LocalTime horario,Estado estado, Paciente paciente, Medico medico) {
+        this.fecha = fecha;
         this.estado = estado;
         this.paciente = paciente;
         this.medico = medico;
         this.horario = horario;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public Estado getEstado() {
