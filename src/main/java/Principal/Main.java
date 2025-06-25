@@ -1,8 +1,8 @@
 package Principal;
 
-import Domain.Paciente;
 import Service.PacienteService;
 import Service.PacienteServiceImpl;
+import domain.Paciente;
 import java.util.List;
 
 public class Main {

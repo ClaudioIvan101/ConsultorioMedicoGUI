@@ -1,6 +1,6 @@
 package Service;
 
-import Domain.Paciente;
+import domain.Paciente;
 import java.util.List;
 /**
  * La interfaz PacienteService define un contrato para la gestión de pacientes.
