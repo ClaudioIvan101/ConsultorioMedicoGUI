@@ -1,9 +1,10 @@
 package Principal;
 
-import Service.PacienteService;
-import Service.PacienteServiceImpl;
+
+import service.Paciente.PacienteService;
 import domain.Paciente;
 import java.util.List;
+import service.Paciente.Impl.PacienteServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
