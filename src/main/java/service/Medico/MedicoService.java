@@ -10,5 +10,6 @@ public interface MedicoService {
     void eliminarMedico(String nombre);
     Medico buscarMedicoPorNombre(String nombre);
     List<Medico> listarMedicosPorEspecialidad(String especialidad);
-    List<Medico> listarMedicos();
+    void listarMedicos();
+    void listarEspecialidades();
 }
