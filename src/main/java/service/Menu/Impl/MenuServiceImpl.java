@@ -49,8 +49,52 @@ public class MenuServiceImpl implements MenuService {
 
             System.out.print("\nOpción: ");
             opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    turnoService.crearTurno();
+                    break;
+                case 2:
+                    System.out.println("Ingrese el nombre del medico: ");
+                    String nombreMedico = scanner.next();
+                    break;
+                case 3:
+                    turnoService.registrarTurnosOcupadosPorPeriodo();
+                    break;
+                case 4:
+                    medicoService.listarMedicos();
+                    break;
+                case 5:
+                    pacienteService.listarPacientes();
+                    break;
+                case 6:
+                    pacienteService.registrarPaciente();
+                    break;
+                case 7:
+                    pacienteService.actualizarPaciente();
+                    break;
+                case 8:
+                    System.out.println("Ingrese el DNI del paciente a eliminar: ");
+                    int dni = scanner.nextInt();
+                    pacienteService.eliminarPaciente(dni);
+                    break;
+                case 9:
+                    medicoService.crearMedico();
+                    break;
+                case 10:
+                    System.out.println("Ingrese el Nombre del medico a editar: ");
+                    String nombre = scanner.nextLine();
+                    medicoService.actualizarMedico(nombre);
+                    break;
+                case 11:
+                    System.out.println("Ingrese el Nombre del medico a eliminar: ");
+                    String nombreMedic = scanner.nextLine();
+                    medicoService.eliminarMedico(nombreMedic);
+                    break;
+                case 12:
+                    break;
+            }
+
         } while (opcion != 12);
-
-
     }
 }
