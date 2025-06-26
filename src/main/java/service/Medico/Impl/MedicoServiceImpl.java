@@ -8,6 +8,7 @@ import java.util.*;
 public class MedicoServiceImpl implements MedicoService {
     private List<Medico> medicos = new ArrayList<>();
 
+   
     @Override
     public void crearMedico() {
         Medico nuevoMedico = new Medico();

@@ -1,16 +1,22 @@
 package service.Menu.Impl;
 
+import domain.Paciente;
+import java.util.List;
 import service.Medico.MedicoService;
 import service.Menu.MenuService;
 import service.Paciente.PacienteService;
+import service.Paciente.Impl.PacienteServiceImpl;
 import service.Turno.TurnoService;
 
 import java.util.Scanner;
 
 public class MenuServiceImpl implements MenuService {
-    private PacienteService pacienteService;
+    private PacienteService pacienteService = new PacienteServiceImpl();
     private TurnoService turnoService;
     private MedicoService medicoService;
+
+    public MenuServiceImpl() {
+    }
 
     public MenuServiceImpl(PacienteService pacienteService, TurnoService turnoService, MedicoService medicoService) {
         this.pacienteService = pacienteService;
@@ -49,8 +55,23 @@ public class MenuServiceImpl implements MenuService {
 
             System.out.print("\nOpción: ");
             opcion = scanner.nextInt();
+            scanner.nextLine();
+            switch(opcion) {
+                case 5:
+                    listarPacientes();
+                    break;
+            }
         } while (opcion != 12);
-
-
+    }
+    private void listarPacientes() {
+        System.out.println("\n--- Lista de pacientes ---");
+        List<Paciente> pacientes = pacienteService.listarPacientes();
+        if(pacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados.");
+        } else {
+            for(Paciente p: pacientes) {
+                System.out.println("Nombre: " + p.getNombre() + " | DNI: " + p.getDni());
+            }
+        }
     }
 }
