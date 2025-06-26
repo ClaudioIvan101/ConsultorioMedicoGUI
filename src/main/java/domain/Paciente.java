@@ -1,16 +1,12 @@
 package domain;
 
 public class Paciente {
-    private String nombre;
-    private int dni;
-
-    public Paciente(String nombre, int dni) {
+ private String nombre;
+ private String dni;
+ 
+    public Paciente(String nombre, String dni) {
         this.nombre = nombre;
         this.dni = dni;
-    }
-
-    public Paciente() {
-
     }
 
     public String getNombre() {
@@ -21,11 +17,11 @@ public class Paciente {
         this.nombre = nombre;
     }
 
-    public int getDni() {
+    public String getDni() {
         return dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 }

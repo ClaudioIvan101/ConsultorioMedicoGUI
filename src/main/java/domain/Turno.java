@@ -2,30 +2,19 @@ package domain;
 
 import domain.enums.Estado;
 
-import java.util.UUID;
-
+import java.time.LocalTime;
 
 public class Turno {
-    private UUID id;
     private Estado estado;
     private Paciente paciente;
     private Medico medico;
-    private RangoHorario horario;
+    private LocalTime horario;
 
-    public Turno(UUID id, Estado estado, Paciente paciente, Medico medico, RangoHorario horario) {
-        this.id = id;
+    public Turno(Estado estado, Paciente paciente, Medico medico, LocalTime horario) {
         this.estado = estado;
         this.paciente = paciente;
         this.medico = medico;
         this.horario = horario;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public Estado getEstado() {
@@ -52,11 +41,11 @@ public class Turno {
         this.medico = medico;
     }
 
-    public RangoHorario getHorario() {
+    public LocalTime getHorario() {
         return horario;
     }
 
-    public void setHorario(RangoHorario horario) {
+    public void setHorario(LocalTime horario) {
         this.horario = horario;
     }
 }
