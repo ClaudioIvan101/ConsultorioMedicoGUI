@@ -11,10 +11,7 @@ import service.Paciente.PacienteService;
 import service.Turno.TurnoService;
 import utils.FechaUtils.FechaUtils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.*;
 
 
@@ -34,26 +31,27 @@ public class TurnoServiceImpl implements TurnoService {
         Scanner sc = new Scanner(System.in);
         Paciente paciente = pacienteService.registrarPaciente();
 
-        Medico medico = solicitarMedico(sc);
-
-        Map<YearMonth, CalendarioMensual> calendarioMedico = obtenerOCrearCalendarioMedico(medico);
+        Medico medico = medicoService.solicitarMedico(sc);
 
         LocalDate fechaElegida = solicitarFecha(sc);
+        Map<YearMonth, CalendarioMensual> calendarioMedico = medicoService.obtenerFechasDisponibles(medico);
+        if (calendarioMedico.isEmpty()) {
+            System.out.println("❌ El médico no tiene turnos generados.");
+            return;
+        }
         if (fechaElegida == null) return;
-
         CalendarioMensual calMensual = calendarioMedico.get(YearMonth.from(fechaElegida));
         if (calMensual == null) {
             System.out.println("No hay turnos generados para esa fecha.");
             return;
         }
+//
+//        List<LocalDateTime> disponibles = listarHorariosDisponibles(calMensual, fechaElegida);
+//        if (disponibles.isEmpty()) {
+//            System.out.println("No hay horarios disponibles para esa fecha.");
+//            return;
+//        }
 
-        List<LocalDateTime> disponibles = listarHorariosDisponibles(calMensual, fechaElegida);
-        if (disponibles.isEmpty()) {
-            System.out.println("No hay horarios disponibles para esa fecha.");
-            return;
-        }
-
-        mostrarHorariosDisponibles(disponibles);
 
         LocalTime horaElegida = solicitarHora(sc);
         if (horaElegida == null) return;
@@ -70,11 +68,12 @@ public class TurnoServiceImpl implements TurnoService {
         }
     }
 
+
     @Override
     public void editarTurno() {
         Scanner sc = new Scanner(System.in);
 
-        Medico medico = solicitarMedico(sc);
+        Medico medico = medicoService.solicitarMedico(sc);
         if (medico == null) return;
 
         Map<YearMonth, CalendarioMensual> calendario = calendarios.get(medico);
@@ -115,7 +114,7 @@ public class TurnoServiceImpl implements TurnoService {
     public void eliminarTurno() {
         Scanner sc = new Scanner(System.in);
 
-        Medico medico = solicitarMedico(sc);
+        Medico medico = medicoService.solicitarMedico(sc);
         if (medico == null) return;
 
         Map<YearMonth, CalendarioMensual> calendario = calendarios.get(medico);
@@ -142,40 +141,11 @@ public class TurnoServiceImpl implements TurnoService {
         }
     }
 
-    @Override
-    public void listarTurnosOcupados() {
-        for (Map.Entry<Medico, Map<YearMonth, CalendarioMensual>> entry : calendarios.entrySet()) {
-            Medico medico = entry.getKey();
-            System.out.println("\nTurnos ocupados de: " + medico.getNombre());
-            for (CalendarioMensual mensual : entry.getValue().values()) {
-                mensual.getTurnos().entrySet().stream()
-                        .filter(e -> e.getValue().getEstado() == Estado.OCUPADO)
-                        .forEach(e -> System.out.println(
-                                FechaUtils.formatoFechaHora(e.getKey()) + " - " + e.getValue().getPaciente().getNombre()
-                        ));
-            }
-        }
-    }
-
-    @Override
-    public void listarTurnosOcupadosByMedico(String nombre) {
-        Medico medico = medicoService.buscarMedicoPorNombre(nombre);
-        if (medico == null || !calendarios.containsKey(medico)) {
-            System.out.println("Médico no encontrado o sin turnos.");
-            return;
-        }
-        System.out.println("Turnos ocupados de: " + nombre);
-        calendarios.get(medico).values().forEach(mensual -> mensual.getTurnos().entrySet().stream()
-                .filter(e -> e.getValue().getEstado() == Estado.OCUPADO)
-                .forEach(e -> System.out.println(
-                        FechaUtils.formatoFechaHora(e.getKey()) + " - " + e.getValue().getPaciente().getNombre()
-                )));
-    }
 
     @Override
     public void registrarTurnosOcupadosPorPeriodo() {
         Scanner sc = new Scanner(System.in);
-        Medico medico = solicitarMedico(sc);
+        Medico medico = medicoService.solicitarMedico(sc);
         if (medico == null) return;
 
         Map<YearMonth, CalendarioMensual> calendario = calendarios.get(medico);
@@ -257,44 +227,6 @@ public class TurnoServiceImpl implements TurnoService {
 
     /* ======= metodos privados ======= */
 
-    private Medico solicitarMedico(Scanner sc) {
-        int opcion;
-        do {
-            System.out.println("¿Desea tomar turno por:");
-            System.out.println("1. Especialidad");
-            System.out.println("2. Nombre del médico");
-            opcion = Integer.parseInt(sc.nextLine());
-        }while(opcion != 1 && opcion != 2);
-
-
-        if (opcion == 1) {
-            System.out.println("-------Especialidades Disponibles------");
-            medicoService.listarEspecialidades();
-
-            System.out.print("Ingrese la especialidad deseada: ");
-            String especialidad = sc.nextLine();
-
-            System.out.println("Médicos disponibles:");
-            List<Medico> disponibles = medicoService.listarMedicosPorEspecialidad(especialidad);
-            for (Medico m : disponibles) {
-                System.out.println("- " + m.getNombre());
-            }
-        }
-
-        System.out.print("Ingrese el nombre del médico: ");
-        String nombreMedico = sc.nextLine();
-        return medicoService.buscarMedicoPorNombre(nombreMedico);
-    }
-
-    private Map<YearMonth, CalendarioMensual> obtenerOCrearCalendarioMedico(Medico medico) {
-        Map<YearMonth, CalendarioMensual> calendario = calendarios.get(medico);
-        if (calendario == null) {
-            System.out.println("Este médico no tiene calendario generado. Generando ahora...");
-            inicializarCalendarioMedico(medico);
-            calendario = calendarios.get(medico);
-        }
-        return calendario;
-    }
 
     private LocalDate solicitarFecha(Scanner sc) {
         System.out.print("Ingrese la fecha deseada (dd/MM/yyyy): ");

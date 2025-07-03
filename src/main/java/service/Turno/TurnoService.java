@@ -7,7 +7,5 @@ public interface TurnoService {
     void inicializarCalendarioMedico(Medico medico);
     void editarTurno();
     void eliminarTurno();
-    void listarTurnosOcupados();
-    void listarTurnosOcupadosByMedico(String nombre);
     void registrarTurnosOcupadosPorPeriodo();
 }

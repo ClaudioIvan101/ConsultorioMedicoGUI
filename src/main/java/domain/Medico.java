@@ -3,6 +3,7 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,9 +12,13 @@ public class Medico {
   private UUID id;
   private String nombre;
   private String especialidad;
-  private Map<DayOfWeek, List<LocalTime>> calendario;
+  private Map<DayOfWeek, List<LocalTime>> calendario;// calendario base
+  private Map<YearMonth, CalendarioMensual> calendarioMensual; // calendario generado
 
-  public Medico(UUID id, String nombre, String especialidad, Map<DayOfWeek, List<LocalTime>> calendario) {
+// Getters y setters
+
+
+  public Medico(UUID id, String nombre, String especialidad, Map<DayOfWeek, List<LocalTime>> calendario, Map<YearMonth, CalendarioMensual> calendarioMensual) {
     this.id = id;
     this.nombre = nombre;
     this.especialidad = especialidad;
@@ -55,4 +60,13 @@ public class Medico {
   public void setCalendario(Map<DayOfWeek, List<LocalTime>> calendario) {
     this.calendario = calendario;
   }
+
+  public Map<YearMonth, CalendarioMensual> getCalendarioMensual() {
+    return calendarioMensual;
+  }
+
+  public void setCalendarioMensual(Map<YearMonth, CalendarioMensual> calendarioMensual) {
+    this.calendarioMensual = calendarioMensual;
+  }
+
 }

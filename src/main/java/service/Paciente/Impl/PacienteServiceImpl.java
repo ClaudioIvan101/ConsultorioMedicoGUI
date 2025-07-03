@@ -6,15 +6,12 @@ import java.util.*;
 
 import service.Paciente.PacienteService;
 
-import static utils.Numbers.EsEnteroUtils.esEntero;
+import static bd.PacienteBd.PacienteBd.PACIENTES;
 
 public class PacienteServiceImpl implements PacienteService {
 
     // Lista que almacena los pacientes
-    private List<Paciente> pacientes = new ArrayList<>(Arrays.asList(
-            new Paciente("Juan Pérez", 12345678),
-            new Paciente("María Gómez", 87654321)
-    ));
+    private List<Paciente> pacientes = PACIENTES;
 
 
     @Override
@@ -22,55 +19,41 @@ public class PacienteServiceImpl implements PacienteService {
         Scanner sc = new Scanner(System.in);
         Paciente nuevoPaciente = new Paciente();
 
-        boolean valido;
-        int dniPaciente = 0;
-        do {
-            System.out.println("Ingrese el DNI del paciente");
-            try {
-                dniPaciente = sc.nextInt();
-                sc.nextLine(); // consume el '\n'
-                valido = true;
-            } catch (InputMismatchException e) {
-                sc.nextLine(); // limpia el buffer
-                valido = false;
-                System.out.println("Error, ingrese nuevamente el DNI del paciente");
-            }
-        } while (!valido);
+        int dniPaciente = leerDniValido(sc);
 
         Paciente pacienteRegistrado = buscarPacientePorDni(dniPaciente);
-        if (pacienteRegistrado != null) {
-            System.out.println("Paciente registrado bajo el nombre: " + pacienteRegistrado.getNombre());
+        if (pacienteRegistrado == null) {
+            nuevoPaciente.setDni(dniPaciente);
+
+            System.out.println("Ingrese el nombre del paciente: ");
+            String nombrePaciente = sc.nextLine(); // ahora sí funciona bien
+            nuevoPaciente.setNombre(nombrePaciente);
+
+            pacientes.add(nuevoPaciente);
+            System.out.println("Paciente registrado con éxito. Nombre: " + nuevoPaciente.getNombre() + " DNI: " + nuevoPaciente.getDni());
+
+            return nuevoPaciente;
+        }else {
+            System.out.println("Paciente con DNI: " + dniPaciente + " se encuentra registrado bajo el nombre: " + pacienteRegistrado.getNombre());
             return pacienteRegistrado;
         }
-
-        nuevoPaciente.setDni(dniPaciente);
-
-        System.out.println("Ingrese el nombre del paciente: ");
-        String nombrePaciente = sc.nextLine(); // ahora sí funciona bien
-        nuevoPaciente.setNombre(nombrePaciente);
-
-        pacientes.add(nuevoPaciente);
-        System.out.println("Paciente registrado con éxito. Nombre: " + nuevoPaciente.getNombre() + " DNI: " + nuevoPaciente.getDni());
-
-        return nuevoPaciente;
     }
-
-
 
     @Override
     public void listarPacientes() {
+        System.out.println("---LISTA DE PACIENTES---");
         for (Paciente p : pacientes) {
             System.out.println("Paciente: " + p.getNombre());
             System.out.println("DNI: " + p.getDni());
+            System.out.println("\n");
         }
     }
-
 
     @Override
     public Paciente buscarPacientePorDni(int dni) {
         for(Paciente buscado : pacientes) {
             if(buscado.getDni() == dni) {
-                System.out.println(buscado);
+                return buscado;
             }
         }
         return null;
@@ -100,47 +83,81 @@ public class PacienteServiceImpl implements PacienteService {
         return 0;
     }
 
-
     @Override
-    public void eliminarPaciente(int dni) {
-        for(Paciente buscado : pacientes) {
-            if(buscado.getDni() == dni) {
-                pacientes.remove(buscado);
+    public void eliminarPaciente() {
+        Scanner sc = new Scanner(System.in);
+        int opcion = 0;
+
+        int dniPaciente = leerDniValido(sc);
+        Paciente pacienteEliminar = buscarPacientePorDni(dniPaciente);
+
+        do {
+            System.out.println("¿Está seguro que desea eliminar al Paciente: " + pacienteEliminar.getNombre()
+                    +"\n 1. Eliminar"
+                    +"\n 2. No eliminar");
+            opcion = sc.nextInt();
+
+            switch(opcion) {
+                case 1:
+                    pacientes.remove(pacienteEliminar);
+                    System.out.println("Paciente eliminado con éxito");
+                    return;
+                case 2:
+                    return;
+                default:
+                    System.out.println("Opcion no valida");
             }
-        }
+        }while (true);
     }
 
-    /**
-     * Actualiza el nombre de un paciente buscado por DNI.
-     */
     @Override
     public Paciente actualizarPaciente() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Ingrese el DNI del paciente a actualizar: ");
-        int dni = sc.nextInt();
-        Paciente pacienteActualizado = buscarPacientePorDni(dni);
+        while (true) {
+            int dniPaciente = leerDniValido(sc);
+            Paciente paciente = buscarPacientePorDni(dniPaciente);
 
-        if(pacienteActualizado == null) {
-            System.out.println("Paciente no encontrado, el DNI ingresado es "+ dni + "\n" +
-                    "1- Reingresar DNI \n 2-Registrar Paciente \n 3- Salir");
+            if (paciente != null) {
+                System.out.println("Paciente encontrado bajo el nombre: " + paciente.getNombre());
+
+                System.out.println("Ingrese su nombre y apellido actualizado:");
+                String nuevoNombre = sc.nextLine();
+                paciente.setNombre(nuevoNombre);
+
+                System.out.println("Paciente actualizado con éxito."
+                        + "\n Nombre: " + paciente.getNombre()
+                        + "\n DNI: " + paciente.getDni());
+                return paciente;
+            }
+
+            System.out.println("Paciente no encontrado. 1-Reintentar 2-Registrar 3-Salir");
             int opcion = sc.nextInt();
-            do {
-                switch(opcion) {
-                    case 1:
-                        System.out.println("Ingrese el DNI del paciente a actualizar: ");
-                        int dniPaciente = sc.nextInt();
-                        Paciente busqueda = buscarPacientePorDni(dniPaciente);
-                        sc.close();
-                    case 2:
-                        System.out.println("Ingrese el nombre del paciente: ");
-                        String nombrePaciente = sc.next();
-                        return registrarPaciente();
-                    case 3:
-                        return null;
-                }
-            }while (opcion > 0 || opcion != 3);
+            switch (opcion) {
+                case 1: continue;
+                case 2: return registrarPaciente();
+                case 3: return null;
+                default: System.out.println("Opción inválida");
+            }
         }
-        return pacienteActualizado;
     }
+
+    private int leerDniValido(Scanner sc) {
+        boolean valido;
+        int dni = 0;
+        do {
+            System.out.println("Ingrese el DNI del paciente:");
+            try {
+                dni = sc.nextInt();
+                sc.nextLine(); // limpiar '\n'
+                valido = true;
+            } catch (InputMismatchException e) {
+                sc.nextLine(); // limpiar buffer
+                System.out.println("Error: Ingrese un número válido.");
+                valido = false;
+            }
+        } while (!valido);
+        return dni;
+    }
+
 }

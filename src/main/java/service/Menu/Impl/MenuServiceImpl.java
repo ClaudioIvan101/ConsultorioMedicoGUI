@@ -55,8 +55,7 @@ public class MenuServiceImpl implements MenuService {
                     turnoService.crearTurno();
                     break;
                 case 2:
-                    System.out.println("Ingrese el nombre del medico: ");
-                    String nombreMedico = scanner.next();
+                    medicoService.consultarDisponibilidad();
                     break;
                 case 3:
                     turnoService.registrarTurnosOcupadosPorPeriodo();
@@ -74,22 +73,16 @@ public class MenuServiceImpl implements MenuService {
                     pacienteService.actualizarPaciente();
                     break;
                 case 8:
-                    System.out.println("Ingrese el DNI del paciente a eliminar: ");
-                    int dni = scanner.nextInt();
-                    pacienteService.eliminarPaciente(dni);
+                    pacienteService.eliminarPaciente();
                     break;
                 case 9:
                     medicoService.crearMedico();
                     break;
                 case 10:
-                    System.out.println("Ingrese el Nombre del medico a editar: ");
-                    String nombre = scanner.nextLine();
-                    medicoService.actualizarMedico(nombre);
+                    medicoService.actualizarMedico();
                     break;
                 case 11:
-                    System.out.println("Ingrese el Nombre del medico a eliminar: ");
-                    String nombreMedic = scanner.nextLine();
-                    medicoService.eliminarMedico(nombreMedic);
+                    medicoService.eliminarMedico();
                     break;
                 case 12:
                     break;

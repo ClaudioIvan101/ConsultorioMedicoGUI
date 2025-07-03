@@ -9,6 +9,6 @@ public interface PacienteService {
     Paciente buscarPacientePorDni(int dni);
     Paciente buscarPacienteByNombre(String nombre);
     int getDNIPacienteByNombre(String nombre);
-    void eliminarPaciente(int dni);
+    void eliminarPaciente();
     Paciente actualizarPaciente();
 }

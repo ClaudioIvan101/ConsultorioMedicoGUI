@@ -12,6 +12,10 @@ public class Turno {
     private Medico medico;
     private RangoHorario horario;
 
+    public Turno() {
+        this.id = UUID.randomUUID();
+    }
+
     public Turno(UUID id, Estado estado, Paciente paciente, Medico medico, RangoHorario horario) {
         this.id = id;
         this.estado = estado;
@@ -59,4 +63,5 @@ public class Turno {
     public void setHorario(RangoHorario horario) {
         this.horario = horario;
     }
+
 }
